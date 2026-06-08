@@ -72,7 +72,7 @@ export const DICT = {
     sending: { zh: "生成中…", en: "Generating…" },
     recommend: { zh: "推荐", en: "Recommend" },
     chatPlaceholder: { zh: "输入你的问题…", en: "Type your question…" },
-    battlePlaceholder: { zh: "例如：用一句话解释什么是流体……", en: "e.g. explain what a fluid is in one sentence…" },
+    battlePlaceholder: { zh: "例如：根据会议内容生成一份总结纪要……", en: "e.g. generate a summary of the meeting…" },
     pickModel: { zh: "选择模型", en: "Pick model" },
     randomPair: { zh: "随机两个模型", en: "Random pair" },
     assistantA: { zh: "助手 A", en: "Assistant A" },
