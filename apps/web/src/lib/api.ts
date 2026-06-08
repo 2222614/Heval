@@ -1,62 +1,48 @@
-// 后端 API 客户端。服务端组件在构建/请求时调用，带优雅降级。
+// 数据访问层。静态导出（GitHub Pages）下没有后端：数据在构建时由
+// scripts/sync-data.mjs 复制进 src/generated/，此处直接内联 import。
+// 函数保持 async 签名不变，页面代码无需改动。
 import type { Leaderboard, CategoryInfo, ModelEntry, DomainCatalog, Showcase } from "./types";
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+import leaderboardJson from "@/generated/leaderboard.json";
+import modelsJson from "@/generated/models.json";
+import manifestJson from "@/generated/manifest.json";
+import domainsJson from "@/generated/domains.json";
+import showcaseJson from "@/generated/showcase.json";
 
-// 后端不可用时返回的空骨架，保证页面仍能渲染（显示"暂无数据"）。
-const EMPTY_LEADERBOARD: Leaderboard = {
-  schema_version: "1.0.0",
-  generated_at: null,
-  task_count: 0,
-  categories: [],
-  category_labels: {},
-  rows: [],
-  is_seed: true,
-  empty: true,
-};
-
-async function getJson<T>(path: string, fallback: T): Promise<T> {
-  try {
-    const res = await fetch(`${BASE}${path}`, {
-      // 榜单数据不频繁变动；开发期每次都拉最新。
-      cache: "no-store",
-    });
-    if (!res.ok) return fallback;
-    return (await res.json()) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-export function getLeaderboard(): Promise<Leaderboard> {
-  return getJson<Leaderboard>("/api/leaderboard", EMPTY_LEADERBOARD);
+export async function getLeaderboard(): Promise<Leaderboard> {
+  // 种子数据：标记 is_seed=true（与后端 store 行为一致）
+  const lb = leaderboardJson as unknown as Leaderboard;
+  return { ...lb, is_seed: true };
 }
 
 export async function getCategories(): Promise<CategoryInfo[]> {
-  const data = await getJson<{ categories: CategoryInfo[] }>("/api/categories", {
-    categories: [],
-  });
-  return data.categories;
+  // 复刻后端 store.categories()：从 manifest 统计每类题数 + leaderboard 标签
+  const lb = leaderboardJson as unknown as Leaderboard;
+  const manifest = manifestJson as unknown as { tasks?: Array<{ category?: string }> };
+  const labels = lb.category_labels || {};
+  const counts: Record<string, number> = {};
+  for (const tsk of manifest.tasks || []) {
+    if (tsk.category) counts[tsk.category] = (counts[tsk.category] || 0) + 1;
+  }
+  return (lb.categories || []).map((cat) => ({
+    id: cat,
+    label: {
+      en: labels[cat]?.en || cat,
+      zh: labels[cat]?.zh || cat,
+    },
+    n_tasks: counts[cat] || 0,
+  }));
 }
 
 export async function getModels(): Promise<ModelEntry[]> {
-  const data = await getJson<{ models: ModelEntry[] }>("/api/models", { models: [] });
-  return data.models;
+  const data = modelsJson as unknown as { models?: ModelEntry[] };
+  return data.models || [];
 }
 
-const EMPTY_DOMAINS: DomainCatalog = {
-  schema_version: "1.0.0",
-  generated_at: null,
-  is_seed: true,
-  axes: [],
-};
-
-export function getDomains(): Promise<DomainCatalog> {
-  return getJson<DomainCatalog>("/api/domains", EMPTY_DOMAINS);
+export async function getDomains(): Promise<DomainCatalog> {
+  return domainsJson as unknown as DomainCatalog;
 }
 
-const EMPTY_SHOWCASE: Showcase = { schema_version: "1.0.0", generated_at: null, axes: [] };
-
-export function getShowcase(): Promise<Showcase> {
-  return getJson<Showcase>("/api/showcase", EMPTY_SHOWCASE);
+export async function getShowcase(): Promise<Showcase> {
+  return showcaseJson as unknown as Showcase;
 }
