@@ -32,12 +32,19 @@ export interface LeaderboardRow {
   } | null;
 }
 
+export interface ScaffoldInfo {
+  name: string;
+  label: { zh?: string; en?: string };
+  blurb?: string | null;
+}
+
 export interface Leaderboard {
   schema_version: string;
   generated_at: string | null;
   task_count: number;
   categories: string[];
   category_labels: Record<string, { en?: string; zh?: string }>;
+  scaffolds?: ScaffoldInfo[];
   rows: LeaderboardRow[];
   is_seed: boolean;
   empty?: boolean;

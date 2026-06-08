@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { DICT, t } from "@/lib/i18n";
 import { useLang } from "./LangProvider";
-import { RankBadge, RegionBadge, OpennessBadge, ScoreBar } from "./ui";
+import { RankBadge, RegionBadge, OpennessBadge, ScoreBar, ScaffoldBadge } from "./ui";
 import { FilterBar, type RegionFilter, type WeightsFilter } from "./FilterBar";
 import type { Leaderboard, LeaderboardRow } from "@/lib/types";
 
@@ -15,9 +15,11 @@ export function OverallTable({ data }: { data: Leaderboard }) {
   const [asc, setAsc] = useState(false);
   const [region, setRegion] = useState<RegionFilter>("all");
   const [weights, setWeights] = useState<WeightsFilter>("all");
+  const [scaffold, setScaffold] = useState<string>("all");
 
   const rows = useMemo(() => {
     let copy = data.rows.filter((r) => {
+      if (scaffold !== "all" && r.scaffold !== scaffold) return false;
       if (region !== "all" && r.region !== region) return false;
       if (weights !== "all" && (r.openness ?? "closed") !== weights) return false;
       return true;
@@ -29,7 +31,7 @@ export function OverallTable({ data }: { data: Leaderboard }) {
     };
     copy = [...copy].sort((a, b) => (asc ? val(a) - val(b) : val(b) - val(a)));
     return copy;
-  }, [data.rows, sortKey, asc, region, weights]);
+  }, [data.rows, sortKey, asc, region, weights, scaffold]);
 
   function clickSort(key: SortKey) {
     if (sortKey === key) setAsc((v) => !v);
@@ -50,6 +52,9 @@ export function OverallTable({ data }: { data: Leaderboard }) {
         setWeights={setWeights}
         shown={rows.length}
         total={data.rows.length}
+        scaffolds={data.scaffolds}
+        scaffold={scaffold}
+        setScaffold={setScaffold}
       />
       <div className="mx-auto max-w-7xl px-6">
         {rows.length === 0 ? (
@@ -114,9 +119,8 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                         </span>
                         <OpennessBadge openness={r.openness} lang={lang} />
                       </div>
-                      <div className="text-xs" style={{ color: "var(--subtle)" }}>
-                        {r.scaffold}
-                        {r.scaffold_version ? ` · v${r.scaffold_version}` : ""}
+                      <div className="mt-1">
+                        <ScaffoldBadge name={r.scaffold} />
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm" style={{ color: "var(--subtle)" }}>

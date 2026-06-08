@@ -5,13 +5,13 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { NavBar } from "@/components/NavBar";
 
 export const metadata: Metadata = {
-  title: "AlphaEval — AI Model Leaderboard",
+  title: "HEval — AI Model Leaderboard",
   description: "AI model evaluation for agentic coding & expert-domain tasks.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" data-theme="alpha">
+    <html lang="zh-CN" data-theme="light">
       <body>
         <ThemeProvider>
           <LangProvider>

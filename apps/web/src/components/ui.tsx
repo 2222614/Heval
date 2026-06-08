@@ -55,6 +55,18 @@ export function OpennessBadge({ openness, lang }: { openness?: "open" | "closed"
   );
 }
 
+export function ScaffoldBadge({ name }: { name: string }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium"
+      style={{ background: "var(--surface-2)", color: "var(--accent-2)", border: "1px solid var(--border)" }}
+    >
+      <span style={{ opacity: 0.6 }}>⌗</span>
+      {name}
+    </span>
+  );
+}
+
 export function ScoreBar({ score }: { score: number }) {
   return (
     <div className="flex items-center gap-3">

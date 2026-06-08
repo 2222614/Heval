@@ -2,48 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── 主题变量 ──────────────────────────────────────────────
-   classic：旧版 HH Eval（靛紫，保留供对比）
-   alpha：  AlphaEval / 高瓴风格（深藏蓝 + 暖金）
-   通过 <html data-theme="..."> 选择。 */
+/* ── 主题变量：light（白天）/ dark（黑夜），统一红色系 ──────────────
+   通过 <html data-theme="light|dark"> 选择。所有组件颜色走这些变量。 */
 
 :root,
-[data-theme="alpha"] {
+[data-theme="light"] {
   --bg: #faf6f6;
   --surface: #ffffff;
+  --surface-2: #fcf4f4;
   --ink: #2a0e10;
   --subtle: #8a6b6d;
-  --border: #f0e3e4;
-  --accent: #9e1b22; /* 高瓴红主色（深绯红） */
-  --accent-2: #c0282f;
-  --gold: #c8893a; /* 暖金/赭点缀 */
+  --border: #f0e0e1;
+  --accent: #c0282f; /* 红主色 */
+  --accent-2: #9e1b22;
+  --gold: #c8893a; /* 暖橙金点缀 */
   --rank1-bg: #fdeceb;
   --rank1-bd: #eeb4b2;
   --rank1-tx: #9e1b22;
-  /* 综合分进度条渐变（深红→暖橙金） */
-  --bar-hi: linear-gradient(90deg, #9e1b22, #d96a2b);
-  --bar-mid: linear-gradient(90deg, #c0282f, #d9605f);
-  --bar-lo: linear-gradient(90deg, #c9a8a9, #b08e8f);
-  /* 热力格基色 (R,G,B) */
-  --heat-rgb: 158, 27, 34;
+  --bar-hi: linear-gradient(90deg, #c0282f, #e0742f);
+  --bar-mid: linear-gradient(90deg, #d9605f, #e08a6f);
+  --bar-lo: linear-gradient(90deg, #d8b6b7, #c0a0a1);
+  --heat-rgb: 192, 40, 47;
+  --shadow: 0 1px 3px rgba(42, 14, 16, 0.06);
 }
 
-[data-theme="classic"] {
-  --bg: #f7f8fa;
-  --surface: #ffffff;
-  --ink: #0f1115;
-  --subtle: #6b7280;
-  --border: #e5e7eb;
-  --accent: #4f46e5;
-  --accent-2: #7c3aed;
-  --gold: #f59e0b;
-  --rank1-bg: #fffbeb;
-  --rank1-bd: #fcd34d;
-  --rank1-tx: #b45309;
-  --bar-hi: linear-gradient(90deg, #f59e0b, #ea580c);
-  --bar-mid: linear-gradient(90deg, #6366f1, #8b5cf6);
-  --bar-lo: linear-gradient(90deg, #94a3b8, #64748b);
-  --heat-rgb: 79, 70, 229;
+[data-theme="dark"] {
+  --bg: #16100f;
+  --surface: #211816;
+  --surface-2: #2a1d1b;
+  --ink: #f6e9e8;
+  --subtle: #b89a98;
+  --border: #3a2724;
+  --accent: #ef5350; /* 暗底上更亮的红，保证可读性 */
+  --accent-2: #f47a6f;
+  --gold: #e0a45a;
+  --rank1-bg: #3a1d1c;
+  --rank1-bd: #7a3631;
+  --rank1-tx: #f6a39d;
+  --bar-hi: linear-gradient(90deg, #ef5350, #f4923f);
+  --bar-mid: linear-gradient(90deg, #e0605f, #ef8a6f);
+  --bar-lo: linear-gradient(90deg, #6b4a48, #876462);
+  --heat-rgb: 239, 83, 80;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 html,
@@ -51,7 +51,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .score-bar {

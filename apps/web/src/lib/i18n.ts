@@ -78,10 +78,10 @@ export const DICT = {
     weights: { zh: "权重", en: "Weights" },
   },
   theme: {
-    label: { zh: "主题", en: "Theme" },
-    classic: { zh: "经典版", en: "Classic" },
-    alpha: { zh: "高瓴版", en: "AlphaEval" },
+    label: { zh: "切换白天 / 黑夜", en: "Toggle light / dark" },
   },
+  scaffold: { zh: "脚手架", en: "Scaffold" },
+  allScaffolds: { zh: "全部脚手架", en: "All scaffolds" },
   tasks: { zh: "题", en: "tasks" },
   noData: { zh: "暂无数据", en: "No data" },
   showing: { zh: "显示", en: "Showing" },

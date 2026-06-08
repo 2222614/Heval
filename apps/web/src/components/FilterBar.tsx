@@ -37,6 +37,9 @@ export function FilterBar({
   setWeights,
   shown,
   total,
+  scaffolds,
+  scaffold,
+  setScaffold,
 }: {
   lang: Lang;
   region: RegionFilter;
@@ -45,9 +48,28 @@ export function FilterBar({
   setWeights: (w: WeightsFilter) => void;
   shown: number;
   total: number;
+  scaffolds?: { name: string; label: { zh?: string; en?: string } }[];
+  scaffold?: string; // "all" 或某个 scaffold name
+  setScaffold?: (s: string) => void;
 }) {
   return (
     <div className="mx-auto mb-4 flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-6">
+      {scaffolds && scaffolds.length > 0 && setScaffold && (
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold" style={{ color: "var(--subtle)" }}>
+            {t(DICT.scaffold, lang)}
+          </span>
+          <Chip active={scaffold === "all"} onClick={() => setScaffold("all")}>
+            {t(DICT.filter.all, lang)}
+          </Chip>
+          {scaffolds.map((sc) => (
+            <Chip key={sc.name} active={scaffold === sc.name} onClick={() => setScaffold(sc.name)}>
+              {sc.label[lang] || sc.name}
+            </Chip>
+          ))}
+        </div>
+      )}
+
       <div className="flex items-center gap-2">
         <span className="text-xs font-semibold" style={{ color: "var(--subtle)" }}>
           {t(DICT.filter.region, lang)}

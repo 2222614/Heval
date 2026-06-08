@@ -1,9 +1,9 @@
 "use client";
-// 顶部导航：动态品牌（随主题切换 HH Eval / AlphaEval）+ 五部分入口
-// （后三个标"即将上线"）+ 主题切换 + 语言切换。
+// 顶部导航：HEval 品牌 + 五部分入口（后三个标"即将上线"）+ 白天/黑夜切换 + 语言切换。
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DICT, t } from "@/lib/i18n";
+import { BRAND } from "@/lib/theme";
 import { useLang } from "./LangProvider";
 import { useTheme } from "./ThemeProvider";
 
@@ -17,10 +17,8 @@ const NAV = [
 
 export function NavBar() {
   const { lang, toggle: toggleLang } = useLang();
-  const { theme, meta, toggle: toggleTheme } = useTheme();
+  const { theme, toggle: toggleTheme } = useTheme();
   const pathname = usePathname();
-
-  const brand = lang === "zh" ? meta.brandZh : meta.brandEn;
 
   return (
     <header
@@ -31,12 +29,12 @@ export function NavBar() {
         <Link href="/" className="flex items-center gap-2">
           <span
             className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
-            style={{ background: `linear-gradient(135deg, ${meta.logoFrom}, ${meta.logoTo})` }}
+            style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-2))" }}
           >
-            {theme === "alpha" ? "α" : "HH"}
+            H
           </span>
           <span className="text-lg font-bold tracking-tight" style={{ color: "var(--ink)" }}>
-            {brand}
+            {BRAND}
           </span>
         </Link>
 
@@ -65,11 +63,7 @@ export function NavBar() {
                 key={item.href}
                 href={item.href}
                 className={`${base} ${active ? "text-white" : "hover:opacity-70"}`}
-                style={
-                  active
-                    ? { background: "var(--accent)", color: "#fff" }
-                    : { color: "var(--subtle)" }
-                }
+                style={active ? { background: "var(--accent)", color: "#fff" } : { color: "var(--subtle)" }}
               >
                 {label}
               </Link>
@@ -78,14 +72,15 @@ export function NavBar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          {/* 主题切换：经典版 ↔ 高瓴版 */}
+          {/* 白天/黑夜切换 */}
           <button
             onClick={toggleTheme}
             title={t(DICT.theme.label, lang)}
-            className="rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors hover:opacity-70"
+            aria-label="toggle theme"
+            className="flex h-7 w-7 items-center justify-center rounded-lg border text-sm transition-colors hover:opacity-70"
             style={{ borderColor: "var(--border)", color: "var(--subtle)" }}
           >
-            {theme === "alpha" ? t(DICT.theme.classic, lang) : t(DICT.theme.alpha, lang)}
+            {theme === "light" ? "🌙" : "☀️"}
           </button>
           {/* 语言切换 */}
           <button
