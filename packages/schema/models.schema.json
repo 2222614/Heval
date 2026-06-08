@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hh-eval/schema/models.schema.json",
+  "title": "ModelCatalog",
+  "description": "Catalog of evaluable models. Carries provider routing (env-var NAMES only, never secret values) and pricing for cost computation and the Part 3 advisor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "models"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "models": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/model" }
+    }
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "display", "provider", "region", "client"],
+      "properties": {
+        "id": { "type": "string", "description": "Stable catalog key used in run records." },
+        "display": { "type": "string", "description": "Pretty name for the UI." },
+        "provider": { "type": "string", "examples": ["anthropic", "openai", "google", "deepseek", "qwen", "zhipu", "moonshot"] },
+        "org": { "type": ["string", "null"], "description": "Owning organization, display name (e.g. Anthropic, 阿里, 字节跳动, DeepSeek). Drives the grouped catalog view.", "default": null },
+        "region": { "type": "string", "enum": ["foreign", "domestic"] },
+        "openness": { "type": "string", "enum": ["closed", "open"], "default": "closed", "description": "closed = proprietary/closed-weights API; open = open-weights model." },
+        "snapshot": { "type": ["string", "null"], "description": "Pinned model snapshot/version string passed to the API." },
+        "client": {
+          "type": "object",
+          "description": "How to reach this model. References env-var NAMES only.",
+          "additionalProperties": false,
+          "required": ["kind", "api_key_env"],
+          "properties": {
+            "kind": { "type": "string", "enum": ["anthropic", "openai_compat", "gemini"], "description": "Provider client implementation to use." },
+            "api_key_env": { "type": "string", "description": "Name of the env var holding the API key, e.g. ANTHROPIC_API_KEY." },
+            "base_url_env": { "type": ["string", "null"], "description": "Name of the env var holding the base URL (for openai_compat domestic providers)." },
+            "base_url_default": { "type": ["string", "null"], "description": "Fallback base URL if the env var is unset." },
+            "model_param": { "type": ["string", "null"], "description": "The exact model string to send to the API (defaults to snapshot or id)." }
+          }
+        },
+        "pricing": {
+          "type": ["object", "null"],
+          "description": "USD per 1M tokens. Used to compute cost_usd.",
+          "additionalProperties": false,
+          "properties": {
+            "input_per_mtok": { "type": "number", "minimum": 0 },
+            "output_per_mtok": { "type": "number", "minimum": 0 },
+            "cached_input_per_mtok": { "type": ["number", "null"], "minimum": 0 },
+            "currency": { "type": "string", "default": "USD" }
+          }
+        },
+        "context_window": { "type": ["integer", "null"], "minimum": 0 },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

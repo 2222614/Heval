@@ -1,0 +1,17 @@
+{
+  "name": "@hh-eval/schema",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared JSON Schemas + generated TypeScript types — the contract between the Python harness output and the web frontend input.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "ts/index.ts",
+  "types": "ts/index.ts",
+  "files": ["*.schema.json", "ts/"],
+  "scripts": {
+    "generate": "node scripts/generate-types.mjs"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "^15.0.0"
+  }
+}

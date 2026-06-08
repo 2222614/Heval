@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── 主题变量 ──────────────────────────────────────────────
+   classic：旧版 HH Eval（靛紫，保留供对比）
+   alpha：  AlphaEval / 高瓴风格（深藏蓝 + 暖金）
+   通过 <html data-theme="..."> 选择。 */
+
+:root,
+[data-theme="alpha"] {
+  --bg: #faf6f6;
+  --surface: #ffffff;
+  --ink: #2a0e10;
+  --subtle: #8a6b6d;
+  --border: #f0e3e4;
+  --accent: #9e1b22; /* 高瓴红主色（深绯红） */
+  --accent-2: #c0282f;
+  --gold: #c8893a; /* 暖金/赭点缀 */
+  --rank1-bg: #fdeceb;
+  --rank1-bd: #eeb4b2;
+  --rank1-tx: #9e1b22;
+  /* 综合分进度条渐变（深红→暖橙金） */
+  --bar-hi: linear-gradient(90deg, #9e1b22, #d96a2b);
+  --bar-mid: linear-gradient(90deg, #c0282f, #d9605f);
+  --bar-lo: linear-gradient(90deg, #c9a8a9, #b08e8f);
+  /* 热力格基色 (R,G,B) */
+  --heat-rgb: 158, 27, 34;
+}
+
+[data-theme="classic"] {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --ink: #0f1115;
+  --subtle: #6b7280;
+  --border: #e5e7eb;
+  --accent: #4f46e5;
+  --accent-2: #7c3aed;
+  --gold: #f59e0b;
+  --rank1-bg: #fffbeb;
+  --rank1-bd: #fcd34d;
+  --rank1-tx: #b45309;
+  --bar-hi: linear-gradient(90deg, #f59e0b, #ea580c);
+  --bar-mid: linear-gradient(90deg, #6366f1, #8b5cf6);
+  --bar-lo: linear-gradient(90deg, #94a3b8, #64748b);
+  --heat-rgb: 79, 70, 229;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease;
+}
+
+.score-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.score-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 9999px;
+}
