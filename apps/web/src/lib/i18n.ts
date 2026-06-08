@@ -82,6 +82,8 @@ export const DICT = {
   },
   scaffold: { zh: "脚手架", en: "Scaffold" },
   allScaffolds: { zh: "全部脚手架", en: "All scaffolds" },
+  humanRef: { zh: "人工参考解", en: "Human Ref" },
+  recommendedScaffold: { zh: "推荐脚手架", en: "Best scaffold" },
   tasks: { zh: "题", en: "tasks" },
   noData: { zh: "暂无数据", en: "No data" },
   showing: { zh: "显示", en: "Showing" },

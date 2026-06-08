@@ -4,7 +4,7 @@
 import { useMemo, useState } from "react";
 import { DICT, t } from "@/lib/i18n";
 import { useLang } from "./LangProvider";
-import { OpennessBadge } from "./ui";
+import { OpennessBadge, ScaffoldBadge } from "./ui";
 import { heatBg, heatTextColor, pct } from "@/lib/score";
 import type { DomainCatalog, Domain, DomainTask, TaskLeader } from "@/lib/types";
 
@@ -21,11 +21,14 @@ function LeaderRow({ leader, rank }: { leader: TaskLeader; rank: number }) {
         {rank}
       </td>
       <td className="px-3 py-2">
-        <span className="font-medium" style={{ color: "var(--ink)" }}>
-          {leader.model_display}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-medium" style={{ color: "var(--ink)" }}>
+            {leader.model_display}
+          </span>
+          {leader.scaffold && <ScaffoldBadge name={leader.scaffold} />}
+        </div>
         {leader.org && (
-          <span className="ml-2 text-xs" style={{ color: "var(--subtle)" }}>
+          <span className="text-xs" style={{ color: "var(--subtle)" }}>
             {leader.org}
           </span>
         )}
@@ -67,7 +70,12 @@ function PickCard({
       <div className="text-lg font-bold" style={{ color: "var(--ink)" }}>
         {leader.model_display}
       </div>
-      <div className="mt-1 flex items-center gap-3 text-sm" style={{ color: "var(--subtle)" }}>
+      {leader.scaffold && (
+        <div className="mt-1.5">
+          <ScaffoldBadge name={leader.scaffold} />
+        </div>
+      )}
+      <div className="mt-1.5 flex items-center gap-3 text-sm" style={{ color: "var(--subtle)" }}>
         <span className="font-mono font-semibold">{pct(leader.score)}</span>
         {leader.avg_cost_usd != null && <span className="font-mono">${leader.avg_cost_usd.toFixed(2)}/题</span>}
       </div>

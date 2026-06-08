@@ -35,7 +35,7 @@ export function RegionBadge({ region, lang }: { region: "foreign" | "domestic"; 
   const isDom = region === "domestic";
   return (
     <span
-      className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${
+      className={`inline-flex items-center whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium ${
         isDom ? "bg-rose-50 text-rose-600" : "bg-sky-50 text-sky-600"
       }`}
     >
@@ -82,7 +82,7 @@ export function ScoreBar({ score, max = 1 }: { score: number; max?: number }) {
       return;
     }
     let raf = 0;
-    const dur = 900;
+    const dur = 1600;
     let start = 0;
     const step = (ts: number) => {
       if (!start) start = ts;
@@ -106,7 +106,7 @@ export function ScoreBar({ score, max = 1 }: { score: number; max?: number }) {
           style={{
             width: inView ? `${targetW}%` : "0%",
             background: scoreBarVar(score),
-            transition: "width 0.9s cubic-bezier(0.22,1,0.36,1)",
+            transition: "width 1.6s cubic-bezier(0.22,1,0.36,1)",
           }}
         />
       </div>
@@ -114,8 +114,8 @@ export function ScoreBar({ score, max = 1 }: { score: number; max?: number }) {
   );
 }
 
-// Oracle 参照线：标准解得分上界，虚线样式，不占排名。
-export function OracleLine({ label, score }: { label: string; score: number }) {
+// 人工参考解参照线：标准解得分上界，虚线样式，不占排名。
+export function OracleLine({ label, badge, score }: { label: string; badge: string; score: number }) {
   return (
     <div
       className="flex items-center gap-3 rounded-xl border border-dashed px-5 py-3"
@@ -125,13 +125,13 @@ export function OracleLine({ label, score }: { label: string; score: number }) {
         className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold"
         style={{ background: "var(--rank1-bg)", color: "var(--rank1-tx)" }}
       >
-        ◇ Oracle
+        ◇ {badge}
       </span>
       <span className="text-sm font-medium" style={{ color: "var(--ink)" }}>
         {label}
       </span>
       <div className="ml-auto flex items-center gap-3">
-        <div className="score-bar hidden w-[240px] sm:block" style={{ opacity: 0.8 }}>
+        <div className="score-bar hidden w-[320px] sm:block" style={{ opacity: 0.85 }}>
           <span style={{ width: `${score * 100}%`, background: "var(--bar-hi)" }} />
         </div>
         <span className="font-mono text-sm font-bold tabular-nums" style={{ color: "var(--accent-2)" }}>

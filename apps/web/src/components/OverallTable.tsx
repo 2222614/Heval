@@ -68,7 +68,8 @@ export function OverallTable({ data }: { data: Leaderboard }) {
           <div className="space-y-3">
             {data.oracle_reference && (
               <OracleLine
-                label={data.oracle_reference.label[lang] || data.oracle_reference.label.en || "Oracle"}
+                badge={t(DICT.humanRef, lang)}
+                label={data.oracle_reference.label[lang] || data.oracle_reference.label.en || ""}
                 score={data.oracle_reference.overall}
               />
             )}
@@ -79,29 +80,29 @@ export function OverallTable({ data }: { data: Leaderboard }) {
             <table className="w-full">
               <thead>
                 <tr
-                  className="border-b text-left text-xs font-semibold uppercase tracking-wider"
+                  className="border-b text-center text-xs font-semibold uppercase tracking-wider"
                   style={{ borderColor: "var(--border)", color: "var(--subtle)" }}
                 >
-                  <th className="px-6 py-4">{t(DICT.overall.rank, lang)}</th>
-                  <th className="px-6 py-4">{t(DICT.overall.model, lang)}</th>
-                  <th className="px-6 py-4">{t(DICT.org, lang)}</th>
-                  <th className="px-6 py-4">{t(DICT.overall.region, lang)}</th>
+                  <th className="px-4 py-4">{t(DICT.overall.rank, lang)}</th>
+                  <th className="px-4 py-4 text-left">{t(DICT.overall.model, lang)}</th>
+                  <th className="px-3 py-4">{t(DICT.org, lang)}</th>
+                  <th className="w-[88px] px-3 py-4">{t(DICT.overall.region, lang)}</th>
                   <th
-                    className="cursor-pointer px-6 py-4 hover:opacity-70"
+                    className="w-[34%] cursor-pointer px-4 py-4 hover:opacity-70"
                     onClick={() => clickSort("score")}
                   >
                     {t(DICT.overall.score, lang)}
                     {arrow("score")}
                   </th>
                   <th
-                    className="cursor-pointer px-6 py-4 text-right hover:opacity-70"
+                    className="cursor-pointer px-4 py-4 hover:opacity-70"
                     onClick={() => clickSort("cost")}
                   >
                     {t(DICT.overall.cost, lang)}
                     {arrow("cost")}
                   </th>
                   <th
-                    className="cursor-pointer px-6 py-4 text-right hover:opacity-70"
+                    className="cursor-pointer px-4 py-4 hover:opacity-70"
                     onClick={() => clickSort("latency")}
                   >
                     {t(DICT.overall.latency, lang)}
@@ -116,10 +117,12 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                     className="hh-row border-b"
                     style={{ borderColor: "var(--border)" }}
                   >
-                    <td className="px-6 py-4">
-                      <RankBadge rank={i + 1} />
+                    <td className="px-4 py-4 text-center">
+                      <div className="flex justify-center">
+                        <RankBadge rank={i + 1} />
+                      </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold" style={{ color: "var(--ink)" }}>
                           {r.model_display}
@@ -130,19 +133,21 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                         <ScaffoldBadge name={r.scaffold} />
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm" style={{ color: "var(--subtle)" }}>
+                    <td className="px-3 py-4 text-center text-sm" style={{ color: "var(--subtle)" }}>
                       {r.org || "—"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-4 text-center">
                       <RegionBadge region={r.region} lang={lang} />
                     </td>
-                    <td className="px-6 py-4">
-                      <ScoreBar score={r.overall.avg_score} />
+                    <td className="px-4 py-4">
+                      <div className="flex justify-center">
+                        <ScoreBar score={r.overall.avg_score} />
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-right font-mono text-sm tabular-nums" style={{ color: "var(--subtle)" }}>
+                    <td className="px-4 py-4 text-center font-mono text-sm tabular-nums" style={{ color: "var(--subtle)" }}>
                       {r.overall.avg_cost_usd != null ? `$${r.overall.avg_cost_usd.toFixed(2)}` : "—"}
                     </td>
-                    <td className="px-6 py-4 text-right font-mono text-sm tabular-nums" style={{ color: "var(--subtle)" }}>
+                    <td className="px-4 py-4 text-center font-mono text-sm tabular-nums" style={{ color: "var(--subtle)" }}>
                       {r.overall.avg_latency_sec != null ? r.overall.avg_latency_sec.toFixed(0) : "—"}
                     </td>
                   </tr>

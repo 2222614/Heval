@@ -75,6 +75,7 @@ export interface TaskLeader {
   org?: string | null;
   score: number;
   avg_cost_usd?: number | null;
+  scaffold?: string | null;
 }
 
 export interface CaseRef {

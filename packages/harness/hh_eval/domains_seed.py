@@ -11,6 +11,7 @@ schema：packages/schema/domains.schema.json
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Optional
@@ -192,6 +193,18 @@ _GENERAL = {
 }
 
 
+# 可推荐的脚手架（与主榜一致）。每条 leader 标注"达到该分的推荐脚手架"。
+_SCAFFOLD_NAMES = ["Claude Code", "Cursor", "GitHub Copilot", "Codex CLI", "Trae"]
+
+
+def _pick_scaffold(mid: str, salt: str, rank: int) -> str:
+    """为某 leader 选一个推荐脚手架。榜首偏向 Claude Code，其余按确定性哈希分散。"""
+    if rank == 0:
+        return "Claude Code"
+    h = int(hashlib.sha256(f"{salt}|{mid}|sc".encode()).hexdigest(), 16)
+    return _SCAFFOLD_NAMES[h % len(_SCAFFOLD_NAMES)]
+
+
 def _leaders_for(catalog, domain_bias: float, skill_bias: dict, salt: str, top_n: int = 5) -> list[dict]:
     scored = []
     for m in catalog:
@@ -206,7 +219,10 @@ def _leaders_for(catalog, domain_bias: float, skill_bias: dict, salt: str, top_n
             "avg_cost_usd": round(_cost_for(m), 4),
         })
     scored.sort(key=lambda x: x["score"], reverse=True)
-    return scored[:top_n]
+    top = scored[:top_n]
+    for rank, leader in enumerate(top):
+        leader["scaffold"] = _pick_scaffold(leader["model_id"], salt, rank)
+    return top
 
 
 def build_domains() -> dict:

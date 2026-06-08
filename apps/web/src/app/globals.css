@@ -55,7 +55,7 @@ body {
 }
 
 .score-bar {
-  height: 0.5rem;
+  height: 0.7rem;
   border-radius: 9999px;
   background: var(--border);
   overflow: hidden;
