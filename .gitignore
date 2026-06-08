@@ -41,3 +41,6 @@ results/runs/
 
 # --- Docker build context leftovers ---
 *.tar
+
+# 机密本地代码题：不进仓库
+agentic_coding_samples/
