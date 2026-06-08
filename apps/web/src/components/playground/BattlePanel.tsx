@@ -144,31 +144,33 @@ export function BattlePanel({ models }: { models: ChatModel[] }) {
         </div>
       )}
 
-      {/* 输入条 */}
+      {/* 输入框（布局与选型顾问一致：未提交时大，提交后缩小） */}
       <div
-        className="mt-5 flex items-end gap-2 rounded-2xl border p-3 shadow-sm transition-shadow focus-within:shadow-md"
+        className="mt-5 rounded-2xl border p-4 shadow-sm transition-shadow focus-within:shadow-md"
         style={{ borderColor: "var(--border)", background: "var(--surface)" }}
       >
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={onKey}
-          rows={2}
-          placeholder={t(DICT.playground.chatPlaceholder, lang)}
-          className="flex-1 resize-none bg-transparent text-sm outline-none"
+          rows={asked ? 2 : 3}
+          placeholder={t(DICT.playground.battlePlaceholder, lang)}
+          className="w-full resize-none bg-transparent text-sm outline-none"
           style={{ color: "var(--ink)" }}
         />
-        <button
-          onClick={start}
-          disabled={streaming || !prompt.trim() || models.length < 2}
-          className="chip rounded-lg px-5 py-2 text-sm font-semibold text-white disabled:opacity-40"
-          style={{ background: "var(--accent)" }}
-        >
-          {streaming ? t(DICT.playground.sending, lang) : t(DICT.playground.battleStart, lang)}
-        </button>
-      </div>
-      <div className="mt-2 text-center text-xs" style={{ color: "var(--subtle)" }}>
-        {models.length < 2 ? t(DICT.playground.noBattleModels, lang) : t(DICT.playground.enterHint, lang)}
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-xs" style={{ color: "var(--subtle)" }}>
+            {models.length < 2 ? t(DICT.playground.noBattleModels, lang) : t(DICT.playground.enterHint, lang)}
+          </span>
+          <button
+            onClick={start}
+            disabled={streaming || !prompt.trim() || models.length < 2}
+            className="chip rounded-lg px-5 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+            style={{ background: "var(--accent)" }}
+          >
+            {streaming ? t(DICT.playground.sending, lang) : t(DICT.playground.battleStart, lang)}
+          </button>
+        </div>
       </div>
 
       {/* 示例 chips（未提交时展示） */}
