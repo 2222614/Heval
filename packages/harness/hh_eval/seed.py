@@ -115,22 +115,20 @@ _CATEGORY_LABELS = {
 }
 
 
-# 脚手架（scaffold）= 驱动模型完成任务的智能体框架。同一模型在不同脚手架
+# 脚手架（scaffold）= 驱动模型完成任务的智能体框架/IDE。同一模型在不同脚手架
 # 下分数不同（工具编排、上下文管理、重试策略差异）。这是榜单的核心看点。
-#   mult：能力乘子（作用于综合实力），oracle=参考解接近天花板。
-#   not_all_models：仅覆盖部分模型（如 Codex CLI 主要服务 OpenAI 系）。
+# 每个脚手架都能驱动任意模型；mult 是该脚手架相对实力的能力乘子。
 _SCAFFOLDS = [
-    {"name": "Oracle", "version": "1.0.0", "mult": 1.28, "only_orgs": None,
-     "label_zh": "参考解", "blurb": "黄金参考方案（实力上界基线）"},
-    {"name": "HEval-Agent", "version": "0.1.0", "mult": 1.0, "only_orgs": None,
-     "label_zh": "HEval 智能体", "blurb": "平台自研评测脚手架"},
-    {"name": "Cursor", "version": "1.0", "mult": 0.95, "only_orgs": None,
-     "label_zh": "Cursor", "blurb": "Cursor 编辑器智能体"},
-    {"name": "GitHub Copilot", "version": "1.0", "mult": 0.92, "only_orgs": None,
-     "label_zh": "GitHub Copilot", "blurb": "GitHub Copilot 智能体"},
-    {"name": "Codex CLI", "version": "1.0", "mult": 0.90,
-     "only_orgs": {"OpenAI"}, "label_zh": "Codex CLI", "blurb": "OpenAI Codex 命令行"},
+    {"name": "Claude Code", "version": "2.0", "mult": 1.00, "label_zh": "Claude Code", "blurb": "Anthropic 官方 CLI 智能体"},
+    {"name": "Cursor", "version": "1.0", "mult": 0.97, "label_zh": "Cursor", "blurb": "Cursor AI 编辑器"},
+    {"name": "GitHub Copilot", "version": "1.0", "mult": 0.94, "label_zh": "GitHub Copilot", "blurb": "GitHub Copilot 智能体"},
+    {"name": "Codex CLI", "version": "1.0", "mult": 0.92, "label_zh": "Codex CLI", "blurb": "OpenAI Codex 命令行智能体"},
+    {"name": "Trae", "version": "1.0", "mult": 0.90, "label_zh": "Trae", "blurb": "字节跳动 Trae AI IDE"},
 ]
+
+# Oracle = 题目自带标准解（solution/solve.sh）的得分，作为"满分上界参照"。
+# 它不是脚手架，不进主榜，仅作为榜单顶部一条虚线参照（实力天花板）。
+_ORACLE_MULT = 1.30
 
 
 def build_seed(generated_at: str = "2026-06-08T00:00:00Z") -> dict:
@@ -152,8 +150,6 @@ def build_seed(generated_at: str = "2026-06-08T00:00:00Z") -> dict:
     for sc in _SCAFFOLDS:
         for model in catalog:
             mid = model["id"]
-            if sc["only_orgs"] is not None and model.get("org") not in sc["only_orgs"]:
-                continue
             base = _BASE.get(mid, _DEFAULT_BASE)
             offsets = _SCENARIO_OFFSET.get(mid, {})
             mult = sc["mult"]
@@ -199,6 +195,18 @@ def build_seed(generated_at: str = "2026-06-08T00:00:00Z") -> dict:
 
     rows.sort(key=lambda r: r["overall"]["avg_score"], reverse=True)
 
+    # Oracle 参照：每个 category 取该题标准解的得分上界（不进 rows）。
+    oracle_by_cat = {}
+    oracle_weighted = 0.0
+    for cat in categories:
+        n = cat_counts[cat]
+        # 用各 category 上最强模型基准 × oracle 乘子近似标准解上界
+        best_base = max(_BASE.get(m["id"], _DEFAULT_BASE) for m in catalog)
+        score = _clamp(best_base * _ORACLE_MULT + _det_jitter("oracle", cat, 0.01))
+        oracle_by_cat[cat] = round(score, 4)
+        oracle_weighted += score * n
+    oracle_overall = round(oracle_weighted / total, 4) if total else 0.0
+
     return {
         "schema_version": "1.0.0",
         "generated_at": generated_at,
@@ -209,6 +217,11 @@ def build_seed(generated_at: str = "2026-06-08T00:00:00Z") -> dict:
             {"name": sc["name"], "label": {"zh": sc["label_zh"], "en": sc["name"]}, "blurb": sc["blurb"]}
             for sc in _SCAFFOLDS
         ],
+        "oracle_reference": {
+            "label": {"zh": "标准解参照（满分上界）", "en": "Oracle reference (ceiling)"},
+            "overall": oracle_overall,
+            "by_category": oracle_by_cat,
+        },
         "rows": rows,
     }
 

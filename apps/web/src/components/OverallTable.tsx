@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { DICT, t } from "@/lib/i18n";
 import { useLang } from "./LangProvider";
-import { RankBadge, RegionBadge, OpennessBadge, ScoreBar, ScaffoldBadge } from "./ui";
+import { RankBadge, RegionBadge, OpennessBadge, ScoreBar, ScaffoldBadge, OracleLine } from "./ui";
 import { FilterBar, type RegionFilter, type WeightsFilter } from "./FilterBar";
 import type { Leaderboard, LeaderboardRow } from "@/lib/types";
 
@@ -65,10 +65,17 @@ export function OverallTable({ data }: { data: Leaderboard }) {
             {t(DICT.noData, lang)}
           </div>
         ) : (
-          <div
-            className="overflow-hidden rounded-2xl border shadow-sm"
-            style={{ borderColor: "var(--border)", background: "var(--surface)" }}
-          >
+          <div className="space-y-3">
+            {data.oracle_reference && (
+              <OracleLine
+                label={data.oracle_reference.label[lang] || data.oracle_reference.label.en || "Oracle"}
+                score={data.oracle_reference.overall}
+              />
+            )}
+            <div
+              className="overflow-hidden rounded-2xl border shadow-sm"
+              style={{ borderColor: "var(--border)", background: "var(--surface)" }}
+            >
             <table className="w-full">
               <thead>
                 <tr
@@ -106,7 +113,7 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                 {rows.map((r, i) => (
                   <tr
                     key={`${r.scaffold}-${r.model_id}`}
-                    className="border-b transition-colors hover:bg-black/[0.02]"
+                    className="hh-row border-b"
                     style={{ borderColor: "var(--border)" }}
                   >
                     <td className="px-6 py-4">
@@ -142,6 +149,7 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )}
       </div>
