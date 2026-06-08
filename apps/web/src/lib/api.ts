@@ -1,5 +1,5 @@
 // 后端 API 客户端。服务端组件在构建/请求时调用，带优雅降级。
-import type { Leaderboard, CategoryInfo, ModelEntry, DomainCatalog } from "./types";
+import type { Leaderboard, CategoryInfo, ModelEntry, DomainCatalog, Showcase } from "./types";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
@@ -53,4 +53,10 @@ const EMPTY_DOMAINS: DomainCatalog = {
 
 export function getDomains(): Promise<DomainCatalog> {
   return getJson<DomainCatalog>("/api/domains", EMPTY_DOMAINS);
+}
+
+const EMPTY_SHOWCASE: Showcase = { schema_version: "1.0.0", generated_at: null, axes: [] };
+
+export function getShowcase(): Promise<Showcase> {
+  return getJson<Showcase>("/api/showcase", EMPTY_SHOWCASE);
 }

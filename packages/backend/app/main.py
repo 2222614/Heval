@@ -18,11 +18,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import store
+from .playground import router as playground_router
 
 app = FastAPI(
     title="HH Eval API",
     version="0.1.0",
-    description="Read-only API over evaluation leaderboard data.",
+    description="Read-only API over evaluation leaderboard data + chat/battle/advisor.",
 )
 
 # CORS：开发期放开本地前端；可用 HH_EVAL_CORS_ORIGINS 覆盖（逗号分隔）。
@@ -34,9 +35,12 @@ _origins = [o.strip() for o in _origins_env.split(",") if o.strip()] or [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+# 选型顾问 + Battle 路由
+app.include_router(playground_router)
 
 
 @app.get("/api/health")
@@ -70,6 +74,12 @@ def get_models() -> dict:
 def get_domains() -> dict:
     """Part 2 二级：领域能力树（主流通用 + 高瓴复杂场景 → task → case）。"""
     return store.domains()
+
+
+@app.get("/api/showcase")
+def get_showcase() -> dict:
+    """Part 5：用例库（通用公开经典题 + 专家域拟定题）。"""
+    return store.showcase()
 
 
 @app.get("/api/tasks")

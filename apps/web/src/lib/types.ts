@@ -121,6 +121,39 @@ export interface DomainCatalog {
   axes: Axis[];
 }
 
+// ── 第五部分：用例库 ──
+export interface ShowcaseCase {
+  id: string;
+  title: BiLabel;
+  difficulty?: "easy" | "medium" | "hard" | "unknown";
+  source_type: "public_benchmark" | "fabricated" | "closed_preview";
+  source_name?: string | null;
+  source_url?: string | null;
+  prompt: BiLabel;
+  probes: BiLabel[];
+  answer_key_points: BiLabel[];
+}
+
+export interface ShowcaseCategory {
+  id: string;
+  label: BiLabel;
+  icon?: string | null;
+  cases: ShowcaseCase[];
+}
+
+export interface ShowcaseAxis {
+  id: string;
+  label: BiLabel;
+  kind: "general" | "expert";
+  categories: ShowcaseCategory[];
+}
+
+export interface Showcase {
+  schema_version: string;
+  generated_at?: string | null;
+  axes: ShowcaseAxis[];
+}
+
 export interface ModelEntry {
   id: string;
   display: string;

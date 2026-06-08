@@ -1,5 +1,6 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { redirect } from "next/navigation";
 
-export default function AdvisorPage() {
-  return <ComingSoon kind="advisor" />;
+// 选型顾问已合并进 /playground（左上角切 Mode）。
+export default function AdvisorRedirect() {
+  redirect("/playground");
 }

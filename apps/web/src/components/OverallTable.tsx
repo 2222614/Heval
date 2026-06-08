@@ -1,6 +1,8 @@
 "use client";
 // Part 1：综合能力榜。Scaffold × Model 行，可按列排序 + 区域/开源筛选。
+// 点击行跳转到该模型的详情页 /model/[id]。
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { DICT, t } from "@/lib/i18n";
 import { useLang } from "./LangProvider";
 import { RankBadge, RegionBadge, OpennessBadge, ScoreBar, ScaffoldBadge, OracleLine } from "./ui";
@@ -11,6 +13,7 @@ type SortKey = "score" | "cost" | "latency";
 
 export function OverallTable({ data }: { data: Leaderboard }) {
   const { lang } = useLang();
+  const router = useRouter();
   const [sortKey, setSortKey] = useState<SortKey>("score");
   const [asc, setAsc] = useState(false);
   const [region, setRegion] = useState<RegionFilter>("all");
@@ -114,8 +117,9 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                 {rows.map((r, i) => (
                   <tr
                     key={`${r.scaffold}-${r.model_id}`}
-                    className="hh-row border-b"
+                    className="hh-row group cursor-pointer border-b"
                     style={{ borderColor: "var(--border)" }}
+                    onClick={() => router.push(`/model/${encodeURIComponent(r.model_id)}`)}
                   >
                     <td className="px-4 py-4 text-center">
                       <div className="flex justify-center">
@@ -128,6 +132,14 @@ export function OverallTable({ data }: { data: Leaderboard }) {
                           {r.model_display}
                         </span>
                         <OpennessBadge openness={r.openness} lang={lang} />
+                        {/* 仅一个箭头：默认很淡，悬停时变清晰（克制、不抢眼） */}
+                        <span
+                          className="text-xs opacity-25 transition-opacity duration-200 group-hover:opacity-100"
+                          style={{ color: "var(--accent)" }}
+                          aria-label={t(DICT.viewDetail, lang)}
+                        >
+                          →
+                        </span>
                       </div>
                       <div className="mt-1">
                         <ScaffoldBadge name={r.scaffold} />

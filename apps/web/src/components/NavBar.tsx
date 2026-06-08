@@ -8,11 +8,10 @@ import { useLang } from "./LangProvider";
 import { useTheme } from "./ThemeProvider";
 
 const NAV = [
+  { href: "/playground", key: "playground", ready: true },
   { href: "/", key: "overall", ready: true },
   { href: "/scenario", key: "scenario", ready: true },
-  { href: "/advisor", key: "advisor", ready: false },
-  { href: "/battle", key: "battle", ready: false },
-  { href: "/showcase", key: "showcase", ready: false },
+  { href: "/showcase", key: "showcase", ready: true },
 ] as const;
 
 export function NavBar() {

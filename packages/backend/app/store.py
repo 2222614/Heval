@@ -20,6 +20,7 @@ from hh_eval.paths import (
     manifest_path,
     model_catalog_path,
     seed_leaderboard_path,
+    showcase_path,
 )
 
 
@@ -90,6 +91,14 @@ def domains() -> dict:
     data = _store.load(domains_path())
     if data is None:
         return {"schema_version": "1.0.0", "is_seed": True, "axes": []}
+    return data
+
+
+def showcase() -> dict:
+    """第五部分用例库（general + expert 两轴）。"""
+    data = _store.load(showcase_path())
+    if data is None:
+        return {"schema_version": "1.0.0", "axes": []}
     return data
 
 

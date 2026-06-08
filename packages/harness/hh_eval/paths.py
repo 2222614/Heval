@@ -48,6 +48,10 @@ def domains_path() -> Path:
     return repo_root() / "data" / "domains" / "domains.json"
 
 
+def showcase_path() -> Path:
+    return repo_root() / "data" / "showcase" / "showcase.json"
+
+
 def schema_dir() -> Path:
     return repo_root() / "packages" / "schema"
 
